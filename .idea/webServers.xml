@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d6100149-6701-414e-990a-ebacf4fd0e1f" name="CloudTomcat" url="http://47.122.73.252">
+        <fileTransfer rootFolder="/www/server/tomcat/webapps" accessType="SFTP" host="47.122.73.252" port="22" sshConfigId="7240a457-2cd3-480a-826f-31dcc1d27d72" sshConfig="root@47.122.73.252:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="baa6b58b-cadf-4055-9bf6-e412e6a4cf7d" name="LocalTomcat" url="http://localhost:8180">
+        <fileTransfer mountedRoot="D:\Software\Tomcat\apache-tomcat-9.0.79\webapps" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
