@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cesium练习</title>
+
+  <!--    引入Cesium Build 文件夹相关内容-->
+  <!--    js脚本-->
+  <script src = '../Build/Cesium/Cesium.js'></script>
+  <!--    样式表-->
+  <link rel = "stylesheet" href = "../Build/Cesium/Widgets/widgets.css">
+
+  <style>
+    html,body,#cesiumContainer{
+      width: 100%;
+      height:100%;
+      margin:0;
+      padding:0;
+      overflow: hidden;/*内容溢出时隐藏不显示，这可以防止滚动条的出现*/
+    }
+  </style>
+</head>
+<body>
+<!--    定义一个容器承载地图-->
+<div id = cesiumContainer></div>
+<!--代码主体-->
+<script>
+  //Token
+  Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0ODA1M2JhYi02NzgyLTQxNjgtOWQxMi01OWMyM2FjYjFlNDQiLCJpZCI6MTUxMzQwLCJpYXQiOjE2ODg0NzM5OTl9.Xl-U6Par_DVb2IJ6efQ77Z4nUw7FiaFEBjNwYvSfi80';
+  let viewer= new Cesium.Viewer("cesiumContainer",{
+    //是否显示工具
+    animation:false,//动画
+    timeline:false,//时间轴
+    fullscreenButton:true,//全屏按钮
+    //其他参数
+  });
+
+  viewer.camera.lookAt(
+          //相机聚焦经纬度
+          Cesium.Cartesian3.fromDegrees(116.855413,38.305527),
+          //相机x轴偏移量、y轴偏移量、z轴偏移量
+          new Cesium.Cartesian3(0.0, 0.0, 5000.0)
+  );
+  //重置相机到默认状态
+  viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+          name="viewport">
+
+    <title>Cesium练习</title>
+
+    <script src='../Build/Cesium/Cesium.js'></script>
+
+    <link href="../Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link href="Cover.css" rel="stylesheet">
+
+    <style>
+        html, body, #cesiumContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /*内容溢出时隐藏不显示，这可以防止滚动条的出现*/
+        }
+
+
+    </style>
+</head>
+
+<body>
+<div id="cover">
+    <div class="overlay">
+        <div class="content">
+            <div class="title">
+                沧州大运河数智展示平台
+            </div>
+            <button id="in" onclick="enterTheScene()">点击进入</button>
+        </div>
+    </div>
+</div>
+
+<!--    定义一个容器承载地图-->
+<div id="cesiumContainer"></div>
+
+<script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0ODA1M2JhYi02NzgyLTQxNjgtOWQxMi01OWMyM2FjYjFlNDQiLCJpZCI6MTUxMzQwLCJpYXQiOjE2ODg0NzM5OTl9.Xl-U6Par_DVb2IJ6efQ77Z4nUw7FiaFEBjNwYvSfi80';
+    let viewer = new Cesium.Viewer("cesiumContainer", {
+        //是否显示工具
+        animation: false,//动画
+        timeline: false,//时间轴
+        fullscreenButton: true,//全屏按钮
+        //其他参数
+    });
+
+
+    //一些常量
+    const czLon = 116.855413;
+    const czLat = 38.305527;
+    const cloudHeight = 14000;
+    const cloudPosition = Cesium.Cartesian3.fromDegrees(czLon, czLat, cloudHeight);
+
+
+    // 相机位置置于云层中
+    CameraLookAt({Cz: 30});
+
+
+    //创建并添加云集合clouds
+    let clouds = viewer.scene.primitives.add(
+        new Cesium.CloudCollection({
+            noiseDetail: 16.0,//细节量
+        })
+    );
+    //向云集合中添加云
+    let cloud = clouds.add({
+        position: cloudPosition,
+        //云层的东西、南北、垂直方向上的厚度
+        maximumSize: new Cesium.Cartesian3(1000.0, 600.0, 400.0), // 三维云朵尺寸
+        slice: 0.3,          // 可选：显示厚度
+        brightness: 0.8      // 云亮度
+    })
+
+
+    //当进入按钮按下时
+    function enterTheScene() {
+        //关闭封面
+        let cover = document.getElementById("cover");
+        cover.style.display = "none";
+
+        //穿越云层
+        viewer.camera.flyTo(
+            {
+                destination: Cesium.Cartesian3.fromDegrees(czLon, czLat, cloudHeight - 0.5),
+                orientation: {
+                    heading: Cesium.Math.toRadians(0),
+                    pitch: Cesium.Math.toRadians(-90),
+                    roll: Cesium.Math.toRadians(0),
+                },
+                maximumHeight: cloudHeight + 20,
+                time: 5,
+                complete: function () {
+                    AddGeoJson();//加载河流
+                    viewer.scene.primitives.removeAll();//清除云层
+                    viewer.camera.flyTo(
+                        {
+                            destination: Cesium.Cartesian3.fromDegrees(czLon, czLat - 0.08, 13000),
+                            orientation: {
+                                heading: Cesium.Math.toRadians(0),
+                                pitch: Cesium.Math.toRadians(-60),
+                                roll: Cesium.Math.toRadians(0),
+                            },
+                            maximumHeight: cloudHeight - 10,
+                            time: 5,
+                        }
+                    );
+                },
+            }
+        );
+
+        //重置相机到默认状态
+        viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+    }
+
+    function AddGeoJson() {
+        //加载数据
+        // 加载河流数据
+        viewer.dataSources.add(
+            Cesium.GeoJsonDataSource.load("river.geojson", {
+                fill: Cesium.Color.fromAlpha(Cesium.Color.LIGHTBLUE, 0.8),
+                stroke: Cesium.Color.fromAlpha(Cesium.Color.DARKBLUE, 0.2), // 轮廓颜色
+                strokeWidth: 1 // 轮廓宽度
+            })
+        );
+
+        // 加载政区边界数据
+        viewer.dataSources.add(
+            Cesium.GeoJsonDataSource.load("boundry.geojson", {
+                // 填充颜色暂时没有设置
+                stroke: Cesium.Color.fromAlpha(Cesium.Color.DARKGRAY, 1), // 轮廓颜色
+                strokeWidth: 1 // 轮廓宽度
+            })
+        );
+    }
+
+
+    function CameraLookAt({lon = czLon, lat = czLat, height = cloudHeight, Cx = 0, Cy = 0, Cz = 0}) {
+        viewer.camera.lookAt(
+            //相机聚焦经纬度
+            Cesium.Cartesian3.fromDegrees(czLon, czLat, height),
+            //相机x轴偏移量、y轴偏移量、z轴偏移量
+            new Cesium.Cartesian3(Cx, Cy, Cz),
+        );
+    }
+
+</script>
+</body>
+</html>
