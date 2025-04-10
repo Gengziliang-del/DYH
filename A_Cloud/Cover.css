@@ -92,20 +92,11 @@
     .title {
         font-size: 32px; /* 减小标题字体大小 */
         writing-mode: vertical-rl; /* 使标题纵向排列 */
-        text-align: center; /* 确保文本水平居中 */
         margin: 0; /* 防止外边距影响布局 */
     }
 
-    .content {
-        display: flex;
-        flex-direction: column; /* 保证按钮和内容垂直排列 */
-        justify-content: center;
-        align-items: center;
-        text-align: center; /* 保证内容居中 */
-    }
-
     #in {
-        margin-top: 10px;
+        margin-top: 10px;/*按钮与顶部标题留有空隙*/
         padding: 10px 20px; /* 调整按钮的大小 */
         font-size: 14px; /* 调整按钮字体大小 */
     }
