@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>监听 class 变化（变化结束后触发）</title>
+  <style>
+    .observedDiv {
+      width: 300px;
+      min-height: 50px;
+      border: 1px solid black;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    #outputDiv {
+      width: 300px;
+      min-height: 50px;
+      border: 1px solid green;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>监听的 div（可编辑）：</h2>
+<div class="observedDiv" contenteditable="true">在这里输入文字...</div>
+
+<h2>最终变化后的内容：</h2>
+<div id="outputDiv">这里会在变化完成后更新</div>
+
+<script>
+  let targetNode = document.querySelector(".mx-auto.w-full.max-w-full.pt-4.tablet\\:px-4.px-4");  // 通过 class 选择
+  let timeoutId = null;
+  let delay = 1000; // 变化完成后 1 秒才触发
+
+  let observer = new MutationObserver(() => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      let newText = targetNode.innerText;
+      console.log("变化完成，最终内容:", newText);
+      document.getElementById("outputDiv").innerText = newText;
+    }, delay);
+  });
+
+  observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
+
+</script>
+
+</body>
+</html>
